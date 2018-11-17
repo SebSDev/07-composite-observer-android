@@ -4,13 +4,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Logger;
 
 import de.thro.inf.prg3.a07.api.OpenMensaAPI;
 import de.thro.inf.prg3.a07.model.Meal;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -47,12 +51,18 @@ public class OpenMensaAPITests {
 
     @Test
     public void testGetMeals() throws IOException {
-        // TODO prepare call
+		// get today's date
+		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+		//String today = sdf.format(new Date());
 
-        // TODO execute the call synchronously
+		// there are no meals on weekends :(
+		String today = "2018-11-19";
 
-        // TODO unwrap the body
-        List<Meal> meals = null;
+		// preparing call
+		Call<List<Meal>> call = openMensaAPI.getMeals(today);
+
+		// executing the call synchronously and unwrap the body
+        List<Meal> meals = call.execute().body();
 
         assertNotNull(meals);
         assertNotEquals(0, meals.size());

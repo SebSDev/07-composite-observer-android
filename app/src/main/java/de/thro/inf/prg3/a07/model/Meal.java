@@ -52,6 +52,18 @@ public class Meal {
         this.notes = notes;
     }
 
+    public boolean isVegetarian()
+	{
+		for (String s : getNotes())
+		{
+			if (s.contains("fleisch"))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
