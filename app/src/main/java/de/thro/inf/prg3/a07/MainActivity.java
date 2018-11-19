@@ -26,12 +26,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity
+{
+	// UI elements
 	private Button btn;
 	private CheckBox cb;
 	private ListView lv;
 
+	// api instance
 	private OpenMensaAPI openMensaAPI;
 
 	@Override
@@ -47,19 +49,12 @@ public class MainActivity extends AppCompatActivity {
 		cb = (CheckBox) findViewById(R.id.vegetarian_checkbox);
 		btn = (Button) findViewById(R.id.refresh_button);
 
-		OkHttpClient client = new OkHttpClient.Builder().build();
+		apiSetup();
 
-		Retrofit retrofit = new Retrofit.Builder()
-			.addConverterFactory(GsonConverterFactory.create())
-			.baseUrl("http://openmensa.org/api/v2/")
-			.client(client)
-			.build();
-
-		openMensaAPI = retrofit.create(OpenMensaAPI.class);
-
+		// set initial list data
 		updateList(false);
 
-
+		// update the list if the button gets clicked
 		btn.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
@@ -69,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 		});
 
+		// update the list with the changed checkbox
 		cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
 		{
 			@Override
@@ -79,27 +75,14 @@ public class MainActivity extends AppCompatActivity {
 		});
 	}
 
+	/**
+	 * Updates the List of available meals
+	 * @param vegetarian if true only vegetarian meals are added to the list
+	 */
 	private void updateList(final boolean vegetarian)
 	{
-		// get the date if its a saturday or sunday set it to the next monday
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
-		Date d = new Date();
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(d);
-		if (cal.DAY_OF_WEEK == Calendar.SATURDAY)
-		{
-			cal.add(Calendar.DATE, 2);
-		}
-		else if (cal.DAY_OF_WEEK == Calendar.SUNDAY)
-		{
-			cal.add(Calendar.DATE, 1);
-		}
-		String sDate = sdf.format(cal.getTime());
-
-
-		// preparing call
-		Call<List<Meal>> call = openMensaAPI.getMeals(sDate);
+		// preparing api call
+		Call<List<Meal>> call = openMensaAPI.getMeals(getDateString());
 
 		// executing the call synchronously and unwrap the body
 		call.enqueue(new Callback<List<Meal>>()
@@ -112,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
 					List<Meal> meals = response.body();
 
 					List<String> sList = new ArrayList<>();
+
+					// add the meals to the list.
+					// if the vegetarian flag is set we only add vegetarian meals
 					for (Meal m : meals)
 					{
 						if (!vegetarian || m.isVegetarian())
@@ -119,13 +105,15 @@ public class MainActivity extends AppCompatActivity {
 							sList.add(m.toString());
 						}
 					}
+					// convert the list to an array
 					String[] sData = new String[sList.size()];
 					sData = sList.toArray(sData);
 
+					// set the adapter for the listview
 					lv.setAdapter(new ArrayAdapter<>(
 						MainActivity.this,
-						R.layout.meal_entry,
-						sData
+						R.layout.meal_entry, // layout for single list entries (standard text view)
+						sData // the string array of meals
 					));
 				}
 			}
@@ -136,9 +124,36 @@ public class MainActivity extends AppCompatActivity {
 				lv.setAdapter(new ArrayAdapter<>(
 					MainActivity.this,
 					R.layout.meal_entry,
-					new String[] {"ERROR"}
+					new String[]{"ERROR"} // just add one entry with "ERROR"
 				));
 			}
 		});
+	}
+
+	/**
+	 * sets up retrofit with the openmensa api
+	 */
+	private void apiSetup()
+	{
+		OkHttpClient client = new OkHttpClient.Builder().build();
+
+		Retrofit retrofit = new Retrofit.Builder()
+			.addConverterFactory(GsonConverterFactory.create())
+			.baseUrl("http://openmensa.org/api/v2/")
+			.client(client)
+			.build();
+
+		openMensaAPI = retrofit.create(OpenMensaAPI.class);
+	}
+
+	/**
+	 * Gets the current Date as a String
+	 * @return the date string
+	 */
+	private String getDateString()
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+		Date d = new Date();
+		return sdf.format(d);
 	}
 }

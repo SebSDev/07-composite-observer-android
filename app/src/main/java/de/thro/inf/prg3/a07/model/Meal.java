@@ -10,53 +10,68 @@ import java.util.List;
  * Created by Peter Kurfer on 11/19/17.
  */
 
-public class Meal {
-    private int id;
-    private String name;
-    private String category;
-    private List<String> notes;
+public class Meal
+{
+	private int id;
+	private String name;
+	private String category;
+	private List<String> notes;
 
-    public Meal() {
-        notes = new LinkedList<>();
-    }
+	public Meal()
+	{
+		notes = new LinkedList<>();
+	}
 
-    public int getId() {
-        return id;
-    }
+	public int getId()
+	{
+		return id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setId(int id)
+	{
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName()
+	{
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name)
+	{
+		this.name = name;
+	}
 
-    public String getCategory() {
-        return category;
-    }
+	public String getCategory()
+	{
+		return category;
+	}
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+	public void setCategory(String category)
+	{
+		this.category = category;
+	}
 
-    public List<String> getNotes() {
-        return notes;
-    }
+	public List<String> getNotes()
+	{
+		return notes;
+	}
 
-    public void setNotes(List<String> notes) {
-        this.notes = notes;
-    }
+	public void setNotes(List<String> notes)
+	{
+		this.notes = notes;
+	}
 
-    public boolean isVegetarian()
+	/**
+	 * checks if a meal is vegetarian (for now a meal is not vegetarian if a note contains "fleisch or "fisch"
+	 * @return true if the meal is vegetarian according to our conditions
+	 */
+	public boolean isVegetarian()
 	{
 		for (String s : getNotes())
 		{
-			if (s.contains("fleisch"))
+			// the meal is not vegetarian if the description contains "fleisch" or "fisch"
+			if (s.contains("fleisch") || s.contains("fisch"))
 			{
 				return false;
 			}
@@ -64,43 +79,49 @@ public class Meal {
 		return true;
 	}
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o) return true;
 
-        if (!(o instanceof Meal)) return false;
+		if (!(o instanceof Meal)) return false;
 
-        Meal meal = (Meal) o;
+		Meal meal = (Meal) o;
 
-        return new EqualsBuilder()
-                .append(getId(), meal.getId())
-                .append(getName(), meal.getName())
-                .append(getCategory(), meal.getCategory())
-                .append(getNotes(), meal.getNotes())
-                .isEquals();
-    }
+		return new EqualsBuilder()
+			.append(getId(), meal.getId())
+			.append(getName(), meal.getName())
+			.append(getCategory(), meal.getCategory())
+			.append(getNotes(), meal.getNotes())
+			.isEquals();
+	}
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(getId())
-                .append(getName())
-                .append(getCategory())
-                .append(getNotes())
-                .toHashCode();
-    }
+	@Override
+	public int hashCode()
+	{
+		return new HashCodeBuilder(17, 37)
+			.append(getId())
+			.append(getName())
+			.append(getCategory())
+			.append(getNotes())
+			.toHashCode();
+	}
 
-    @Override
-    public String toString() {
-        StringBuilder notesBuilder = new StringBuilder();
-        for(String s : notes){
-            notesBuilder.append(String.format("%s, ", s));
-        }
-        if(notesBuilder.length() > 0) {
-            notesBuilder.setLength(notesBuilder.length() - 2);
-        }else {
-            notesBuilder.append("No notes");
-        }
-        return String.format("%s\n%s\n%s", name, category, notesBuilder.toString());
-    }
+	@Override
+	public String toString()
+	{
+		StringBuilder notesBuilder = new StringBuilder();
+		for (String s : notes)
+		{
+			notesBuilder.append(String.format("%s, ", s));
+		}
+		if (notesBuilder.length() > 0)
+		{
+			notesBuilder.setLength(notesBuilder.length() - 2);
+		} else
+		{
+			notesBuilder.append("No notes");
+		}
+		return String.format("%s\n%s\n%s", name, category, notesBuilder.toString());
+	}
 }

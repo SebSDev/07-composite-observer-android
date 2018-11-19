@@ -25,51 +25,52 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * Created by Peter Kurfer on 11/19/17.
  */
 
-public class OpenMensaAPITests {
+public class OpenMensaAPITests
+{
 
-    private static final Logger logger = Logger.getLogger(OpenMensaAPITests.class.getName());
-    private OpenMensaAPI openMensaAPI;
+	private static final Logger logger = Logger.getLogger(OpenMensaAPITests.class.getName());
+	private OpenMensaAPI openMensaAPI;
 
-    @BeforeEach
-    public void setup() {
-        // use this to intercept all requests and output them to the logging facilities
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+	@BeforeEach
+	public void setup()
+	{
+		// use this to intercept all requests and output them to the logging facilities
+		HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+		interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(interceptor)
-                .build();
+		OkHttpClient client = new OkHttpClient.Builder()
+			.addInterceptor(interceptor)
+			.build();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl("http://openmensa.org/api/v2/")
-                .client(client)
-                .build();
+		Retrofit retrofit = new Retrofit.Builder()
+			.addConverterFactory(GsonConverterFactory.create())
+			.baseUrl("http://openmensa.org/api/v2/")
+			.client(client)
+			.build();
 
-        openMensaAPI = retrofit.create(OpenMensaAPI.class);
-    }
+		openMensaAPI = retrofit.create(OpenMensaAPI.class);
+	}
 
-    @Test
-    public void testGetMeals() throws IOException {
+	@Test
+	public void testGetMeals() throws IOException
+	{
 		// get today's date
-		//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-		//String today = sdf.format(new Date());
-
-		// there are no meals on weekends :(
-		String today = "2018-11-19";
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+		String today = sdf.format(new Date());
 
 		// preparing call
 		Call<List<Meal>> call = openMensaAPI.getMeals(today);
 
 		// executing the call synchronously and unwrap the body
-        List<Meal> meals = call.execute().body();
+		List<Meal> meals = call.execute().body();
 
-        assertNotNull(meals);
-        assertNotEquals(0, meals.size());
+		assertNotNull(meals);
+		assertNotEquals(0, meals.size());
 
-        for(Meal m : meals){
-            logger.info(m.toString());
-        }
-    }
+		for (Meal m : meals)
+		{
+			logger.info(m.toString());
+		}
+	}
 
 }
