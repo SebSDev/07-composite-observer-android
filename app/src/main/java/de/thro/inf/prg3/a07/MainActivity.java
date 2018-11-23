@@ -135,12 +135,9 @@ public class MainActivity extends AppCompatActivity
 	 */
 	private void apiSetup()
 	{
-		OkHttpClient client = new OkHttpClient.Builder().build();
-
 		Retrofit retrofit = new Retrofit.Builder()
 			.addConverterFactory(GsonConverterFactory.create())
 			.baseUrl("http://openmensa.org/api/v2/")
-			.client(client)
 			.build();
 
 		openMensaAPI = retrofit.create(OpenMensaAPI.class);
