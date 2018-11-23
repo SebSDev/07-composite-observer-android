@@ -63,8 +63,9 @@ public class Meal
 	}
 
 	/**
-	 * checks if a meal is vegetarian (for now a meal is not vegetarian if a note contains "fleisch or "fisch"
+	 * checks if a meal is vegetarian (for now a meal is not vegetarian if a note contains "fleisch" or "fisch"
 	 * @return true if the meal is vegetarian according to our conditions
+	 * @author Sebastian Schäffler
 	 */
 	public boolean isVegetarian()
 	{
